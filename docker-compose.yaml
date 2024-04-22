@@ -1,0 +1,29 @@
+version: "3"
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - data:/var/lib/postgresql/data
+  frontend:
+    container_name: frontend
+    build:
+        context: . #if your Dockerfile is not at the same level change the path here (./frontend)
+        target: dev
+    restart: always
+    command: npm run dev
+    environment:
+        - NODE_ENV=development 
+          #if you’re using Windows, you may need to uncomment the next line - Sol from @Kobe E
+          #- WATCHPACK_POLLING=true
+    volumes:
+        - .:/app
+        - /app/node_modules
+        - /app/.next
+    ports:
+        - 3000:3000
+volumes:
+  data:
